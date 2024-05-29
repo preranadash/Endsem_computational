@@ -1,0 +1,113 @@
+import numpy as np
+
+# Define the true solution function
+def true_solution(x):
+    return (2 * x + 1) / (x**2 + 1)
+
+# Define the function for dy/dx
+def f(x, y):
+    return (2 - 2 * x * y) / (x**2 + 1)
+
+# Euler method function
+def euler_method(x0, y0, h, x_end):
+    # Number of steps
+    n_steps = int((x_end - x0) / h) + 1
+    
+    # Arrays to store the values of x and y
+    x_values = np.zeros(n_steps)
+    y_values = np.zeros(n_steps)
+    
+    # Initial values
+    x_values[0] = x0
+    y_values[0] = y0
+    
+    # Euler method loop
+    for i in range(1, n_steps):
+        x_values[i] = x_values[i - 1] + h
+        y_values[i] = y_values[i - 1] + h * f(x_values[i - 1], y_values[i - 1])
+    
+    return x_values, y_values
+
+
+# Second-order Runge-Kutta (RK2) method function
+def rk2_method(x0, y0, h, x_end):
+    # Number of steps
+    n_steps = int((x_end - x0) / h) + 1
+    
+    # Arrays to store the values of x and y
+    x_values = np.zeros(n_steps)
+    y_values = np.zeros(n_steps)
+    
+    # Initial values
+    x_values[0] = x0
+    y_values[0] = y0
+    
+    # RK2 method loop
+    for i in range(1, n_steps):
+        k1 = h * f(x_values[i - 1], y_values[i - 1])
+        k2 = h * f(x_values[i - 1] + h/2, y_values[i - 1] + k1/2)
+        y_values[i] = y_values[i - 1] + k2
+        x_values[i] = x_values[i - 1] + h
+    
+    return x_values, y_values
+
+# Fourth-order Runge-Kutta (RK4) method function
+def rk4_method(x0, y0, h, x_end):
+    # Number of steps
+    n_steps = int((x_end - x0) / h) + 1
+    
+    # Arrays to store the values of x and y
+    x_values = np.zeros(n_steps)
+    y_values = np.zeros(n_steps)
+    
+    # Initial values
+    x_values[0] = x0
+    y_values[0] = y0
+    
+    # RK4 method loop
+    for i in range(1, n_steps):
+        k1 = h * f(x_values[i - 1], y_values[i - 1])
+        k2 = h * f(x_values[i - 1] + h/2, y_values[i - 1] + k1/2)
+        k3 = h * f(x_values[i - 1] + h/2, y_values[i - 1] + k2/2)
+        k4 = h * f(x_values[i - 1] + h, y_values[i - 1] + k3)
+        y_values[i] = y_values[i - 1] + (k1 + 2*k2 + 2*k3 + k4) / 6
+        x_values[i] = x_values[i - 1] + h
+    
+    return x_values, y_values
+
+
+# Initial conditions and parameters
+x0 = 0
+y0 = 1
+h = 0.1
+x_end = 1
+
+# Solve the differential equation using Euler's method
+x_values_euler, y_values_euler = euler_method(x0, y0, h, x_end)
+
+# Solve the differential equation using RK2 method
+x_values_rk2, y_values_rk2 = rk2_method(x0, y0, h, x_end)
+
+# Solve the differential equation using RK4 method
+x_values_rk4, y_values_rk4 = rk4_method(x0, y0, h, x_end)
+
+# Calculate true solution values at each x value of Euler's method
+y_true_euler = true_solution(x_values_euler)
+
+# Calculate relative error in percentage
+relative_error_euler = np.abs((y_values_euler - y_true_euler) / y_true_euler) * 100
+
+# Calculate relative error in percentage
+relative_error_rk2 = np.abs((y_values_rk2 - y_true_euler) / y_true_euler) * 100
+
+# Calculate relative error in percentage
+relative_error_rk4 = np.abs((y_values_rk4 - y_true_euler) / y_true_euler) * 100
+
+# Print the results in a table
+print("Comparison of the Methods with True Solution:")
+print("----------------------------------------------")
+print("|   x   | True Solution | Relative Error Euler (%) | Relative Error rk2 (%) | Relative Error rk4 (%) |")
+print("----------------------------------------------")
+for i in range(len(x_values_euler)):
+    print(f"| {x_values_euler[i]:.5f} | {y_true_euler[i]:.5f} | {relative_error_euler[i]:.5f} | {relative_error_rk2[i]:.5f} | {relative_error_rk4[i]:.5f} |")
+print("----------------------------------------------")
