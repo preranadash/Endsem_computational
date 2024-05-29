@@ -1,0 +1,105 @@
+#problem 6 a
+import numpy as np
+import matplotlib.pyplot as plt
+
+#100000 random numbers 
+random_numbers = np.random.normal(loc=0, scale=10, size=100000)
+
+#Plot the histogram
+plt.hist(random_numbers, bins=50, density=True, alpha=0.6, color='g', label='Histogram of Sample')
+
+# Plot the parent distribution
+x = np.linspace(-50, 50, 1000)
+y = 1/(10 * np.sqrt(2 * np.pi)) * np.exp( - (x - 0)**2 / (2 * 10**2))
+plt.plot(x, y, color='r', linewidth=2, label='Parent Distribution')
+
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+plt.title('Histogram of Random Numbers from Normal Distribution')
+plt.legend()
+plt.show()
+
+
+#problem 6 b
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 100000 random numbers 
+random_numbers = np.random.normal(loc=0, scale=10, size=100000)
+
+# Compute the power spectrum using FFT
+power_spectrum = np.abs(np.fft.fft(random_numbers))**2
+
+# Frequency bins
+freq = np.fft.fftfreq(len(random_numbers))
+
+# Plot the power spectrum
+plt.plot(freq[:len(freq)//2], power_spectrum[:len(freq)//2], color='b')
+plt.xlabel('Frequency')
+plt.ylabel('Power')
+plt.title('Power Spectrum of Random Numbers')
+plt.grid(True)
+plt.show()
+
+
+#problem 6 c
+import numpy as np
+
+# Generate 100000 random numbers from a normal distribution with mean 0 and standard deviation 10
+random_numbers = np.random.normal(loc=0, scale=10, size=100000)
+
+# Compute the power spectrum using FFT
+power_spectrum = np.abs(np.fft.fft(random_numbers))**2
+
+# Frequency bins
+freq = np.fft.fftfreq(len(random_numbers))
+
+# Find the minimum and maximum values of the wavevector k
+min_k = np.min(freq)
+max_k = np.max(freq)
+
+print("Minimum value of wavevector k:", min_k)
+print("Maximum value of wavevector k:", max_k)
+
+#output Minimum value of wavevector k: -0.5
+Maximum value of wavevector k: 0.499
+
+#problem 6 d
+import numpy as np
+import matplotlib.pyplot as plt
+
+#100000 random Numbers
+random_numbers = np.random.normal(loc=0, scale=10, size=100000)
+
+# Compute the power spectrum using FFT
+power_spectrum = np.abs(np.fft.fft(random_numbers))**2
+
+# Frequency bins
+freq = np.fft.fftfreq(len(random_numbers))
+
+# Convert frequency bins to wavevector k
+k_values = 2 * np.pi * freq
+
+# Number of desired k bins
+num_bins = 5
+
+# Create bins for k
+k_bins = np.linspace(np.min(k_values), np.max(k_values), num_bins + 1)
+
+# Initialize arrays to store average power and corresponding k values for each bin
+avg_power = np.zeros(num_bins)
+avg_k_values = np.zeros(num_bins)
+
+# Compute average power and corresponding k values for each bin
+for i in range(num_bins):
+    mask = (k_values >= k_bins[i]) & (k_values < k_bins[i+1])
+    avg_k_values[i] = np.mean(k_values[mask])
+    avg_power[i] = np.mean(power_spectrum[mask])
+
+# Plot the power spectrum in five uniform k bins
+plt.bar(avg_k_values, avg_power, width=(np.max(k_values) - np.min(k_values)) / num_bins, align='center')
+plt.xlabel('Wavevector (k)')
+plt.ylabel('Average Power')
+plt.title('Power Spectrum in Five Uniform k Bins')
+plt.grid(True)
+plt.show()
