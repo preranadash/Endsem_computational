@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the function for dy/dx
+def f(x, y):
+    return (2 - 2 * x * y) / (x**2 + 1)
+
+# Euler method function
+def euler_method(x0, y0, h, x_end):
+    # Number of steps
+    n_steps = int((x_end - x0) / h) + 1
+    
+    # Arrays to store the values of x and y
+    x_values = np.zeros(n_steps)
+    y_values = np.zeros(n_steps)
+    
+    # Initial values
+    x_values[0] = x0
+    y_values[0] = y0
+    
+    # Euler method loop
+    for i in range(1, n_steps):
+        x_values[i] = x_values[i - 1] + h
+        y_values[i] = y_values[i - 1] + h * f(x_values[i - 1], y_values[i - 1])
+    
+    return x_values, y_values
+
+# Initial conditions and parameters
+x0 = 0
+y0 = 1
+h = 0.1
+x_end = 1
+
+# Solve the differential equation
+x_values, y_values = euler_method(x0, y0, h, x_end)
+
+# Print the results
+for i in range(len(x_values)):
+    print(f"x = {x_values[i]:.1f}, y = {y_values[i]:.5f}")
+
+# Plot the results
+plt.plot(x_values, y_values, 'o-', label='Euler Method')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Euler Method for dy/dx = (2 - 2xy) / (x^2 + 1)')
+plt.legend()
+plt.grid(True)
+plt.show()
